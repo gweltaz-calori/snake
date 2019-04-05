@@ -45,13 +45,21 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
             apple.draw(canvas)
 
             if(snake.intersectsApple(apple)) {
-                apple.position.x = random(0,WIDTH)
-                apple.position.y = random(0,HEIGHT)
-                score++
-                scoreChangedCallback?.invoke()
-                snake.needCollect = true
+                onScoreChanged()
+            }
+
+            if (snake.doesHitHimself()) {
+                gameOverCallback?.let { it() }
             }
         }
+    }
+
+    private fun onScoreChanged() {
+        apple.position.x = random(0,WIDTH)
+        apple.position.y = random(0,HEIGHT)
+        score++
+        scoreChangedCallback?.invoke()
+        snake.needCollect = true
     }
 
     fun onGameOver(onGameOver: () -> Unit) {

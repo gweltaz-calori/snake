@@ -49,6 +49,10 @@ class Snake :DrawableInterface {
             SuperRect(apple.position.x,apple.position.y,apple.size,apple.size)
         )
     }
+
+    fun doesHitHimself(): Boolean {
+        return tail.find { SuperRect.intersects(SuperRect(head.x,head.y,size,size),SuperRect(it.x,it.y,size,size)) } != null
+    }
 }
 
 enum class Direction(val x: Int, val y: Int) {
