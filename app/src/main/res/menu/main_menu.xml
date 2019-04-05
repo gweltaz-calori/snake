@@ -3,7 +3,7 @@
     <item
             android:id="@+id/start"
             app:showAsAction="ifRoom"
-            android:icon="@drawable/ic_stop"
+            android:icon="@drawable/ic_play"
             android:title="@string/start_menu_item">
     </item>
 </menu>

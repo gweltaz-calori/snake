@@ -27,15 +27,16 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/leftButton" />
         <Button
-                android:text="@string/bottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/bottomButton" />
-        <Button
                 android:text="@string/right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/rightButton" />
+        <Button
+                android:text="@string/bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bottomButton" />
+
     </LinearLayout>
     <TextView
             android:visibility="invisible"

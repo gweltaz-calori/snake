@@ -19,11 +19,11 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
     val bounds = Rect(0,0,WIDTH,HEIGHT)
     var score = 0
 
-    val snake: Snake = Snake()
+    var snake: Snake = Snake()
     var apple: Apple = Apple(Tile(random(0,WIDTH),random(0,HEIGHT)))
 
-    var gameOverCallback : (() -> Unit)? = null
-    var scoreChangedCallback : (() -> Unit)? = null
+    private var gameOverCallback : (() -> Unit)? = null
+    private var scoreChangedCallback : (() -> Unit)? = null
 
     override fun onDraw(canvas: Canvas) {
         BORDER_PAINT.color = Color.BLACK
@@ -49,6 +49,7 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
                 apple.position.y = random(0,HEIGHT)
                 score++
                 scoreChangedCallback?.invoke()
+                snake.needCollect = true
             }
         }
     }
@@ -63,5 +64,11 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
 
     fun setDirection(direction: Direction) {
         snake.direction = direction
+    }
+
+    fun resetGame() {
+        snake = Snake()
+        apple = Apple(Tile(random(0,WIDTH),random(0,HEIGHT)))
+        score = 0
     }
 }

@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         gameView?.onGameOver {
             gameOverTextview?.visibility = View.VISIBLE
+            changeStatus()
         }
 
         gameView?.onScoreChanged {
@@ -64,7 +65,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onUpdate() {
-        gameView?.invalidate()
+        if(isPlaying) {
+            gameView?.invalidate()
+        }
     }
 
     private fun click(direction: Direction) {
@@ -81,12 +84,16 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.start -> {
-                toggleIcon()
-                isPlaying = !isPlaying
-                true
+                changeStatus()
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun changeStatus() {
+        isPlaying = !isPlaying
+        toggleIcon()
     }
 
     private fun toggleIcon() {
@@ -95,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         }
         else {
             menu?.getItem(0)?.setIcon(R.drawable.ic_play)
+            gameView?.resetGame()
         }
     }
 }

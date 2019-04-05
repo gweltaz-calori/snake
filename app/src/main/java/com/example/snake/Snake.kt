@@ -8,24 +8,26 @@ import com.example.snake.extensions.SuperRect
 
 class Snake :DrawableInterface {
 
-    var tiles: List<Tile> = listOf(Tile(4, 0),Tile(3, 0), Tile(2, 0), Tile(1, 0))
+    var tiles: List<Tile> = listOf(Tile(4, 0))
     var direction : Direction = Direction.RIGHT
     var head = tiles.first()
     var tail = tiles.subList(1,tiles.size) //remove first element for taik
     val size = 40
+    var needCollect = false
 
     override fun update() {
-        /*head = tiles.first()
-        head.x += direction.x
-        head.y += direction.y*/
         head = tiles.first()
         tail = tiles.subList(1,tiles.size)
 
-        val newHead = Tile(head.x+direction.x,head.y + direction.y) // head after moving
-        val newTail = tiles.dropLast(1)
+        var newTiles = tiles.dropLast(1) //keep same size
 
-        tiles = listOf(newHead) + newTail
+        //grow by one
+        if(needCollect) {
+            newTiles = tiles
+            needCollect = false
+        }
 
+        tiles = listOf(Tile(head.x+direction.x,head.y + direction.y)) + newTiles
     }
 
     override fun draw(canvas: Canvas) {
