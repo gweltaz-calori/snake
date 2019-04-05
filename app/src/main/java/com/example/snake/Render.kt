@@ -3,7 +3,7 @@ package com.example.snake
 import java.util.*
 
 object Render {
-    const val PERIOD = 1.toFloat()/60.toFloat()
+    const val PERIOD = 1.toFloat()/5.toFloat()
     fun start(onUpdate: () -> Unit) {
          Timer().scheduleAtFixedRate(object :TimerTask() {
              override fun run() {

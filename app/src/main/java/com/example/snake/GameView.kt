@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
+import android.widget.Toast
 
 import com.example.snake.extensions.random
 
@@ -16,11 +17,13 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
     val HEIGHT = 800
     val BORDER_PAINT = Paint()
     val bounds = Rect(0,0,WIDTH,HEIGHT)
+    var score = 0
 
     val snake: Snake = Snake()
     var apple: Apple = Apple(Tile(random(0,WIDTH),random(0,HEIGHT)))
 
     var gameOverCallback : (() -> Unit)? = null
+    var scoreChangedCallback : (() -> Unit)? = null
 
     override fun onDraw(canvas: Canvas) {
         BORDER_PAINT.color = Color.BLACK
@@ -41,8 +44,12 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
             snake.draw(canvas)
             apple.draw(canvas)
 
-            println("HEAD ${snake.head}")
-            println("APPLE ${apple.position}")
+            if(snake.intersectsApple(apple)) {
+                apple.position.x = random(0,WIDTH)
+                apple.position.y = random(0,HEIGHT)
+                score++
+                scoreChangedCallback?.invoke()
+            }
         }
     }
 
@@ -50,9 +57,11 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
         gameOverCallback = onGameOver
     }
 
+    fun onScoreChanged(onScoreChanged : () -> Unit) {
+        scoreChangedCallback = onScoreChanged
+    }
+
     fun setDirection(direction: Direction) {
         snake.direction = direction
     }
-
-
 }

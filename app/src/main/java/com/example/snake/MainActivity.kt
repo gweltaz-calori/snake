@@ -1,6 +1,5 @@
 package com.example.snake
 
-import android.opengl.Visibility
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -21,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private var rightButton: Button? = null
     private var bottomButton: Button? = null
     private var gameOverTextview: TextView? = null
+    private var scoreTextView: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         bottomButton = findViewById(R.id.bottomButton)
         rightButton = findViewById(R.id.rightButton)
         gameOverTextview = findViewById(R.id.gameOverTextView)
+        scoreTextView = findViewById(R.id.scoreTextView)
 
         topButton?.setOnClickListener {
             click(Direction.UP)
@@ -56,6 +57,10 @@ class MainActivity : AppCompatActivity() {
         gameView?.onGameOver {
             gameOverTextview?.visibility = View.VISIBLE
         }
+
+        gameView?.onScoreChanged {
+            scoreTextView?.text = "Score : ${gameView?.score.toString()}"
+        }
     }
 
     private fun onUpdate() {
@@ -76,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.start -> {
-                toggleIcon(item)
+                toggleIcon()
                 isPlaying = !isPlaying
                 true
             }
@@ -84,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun toggleIcon(item: MenuItem) {
+    private fun toggleIcon() {
         if(isPlaying) {
             menu?.getItem(0)?.setIcon(R.drawable.ic_stop)
         }
