@@ -1,4 +1,4 @@
-package com.example.snake
+package com.example.snake.game
 
 import android.graphics.Canvas
 import android.graphics.Color
@@ -7,7 +7,7 @@ import android.graphics.Rect
 
 class Apple(tile: Tile) : DrawableInterface {
 
-    val position:Tile = tile
+    val position: Tile = tile
     val size = 40
 
     override fun update() {

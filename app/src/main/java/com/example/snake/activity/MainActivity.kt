@@ -1,4 +1,4 @@
-package com.example.snake
+package com.example.snake.activity
 
 import android.content.Intent
 import android.os.Build
@@ -14,6 +14,16 @@ import android.widget.TextView
 import com.example.snake.services.HighScoreService
 import android.content.pm.PackageManager
 import android.util.Log
+import android.content.ComponentName
+import android.content.Context
+import android.os.IBinder
+import android.content.ServiceConnection
+import com.example.snake.game.Direction
+import com.example.snake.game.GameView
+import com.example.snake.R
+import com.example.snake.game.Render
+import android.widget.Toast
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,10 +35,41 @@ class MainActivity : AppCompatActivity() {
     private var leftButton: Button? = null
     private var rightButton: Button? = null
     private var bottomButton: Button? = null
+    private var scoreboardButton: Button? = null
     private var gameOverTextview: TextView? = null
     private var scoreTextView: TextView? = null
     private val PERMISSIONS_REQUEST_CODE: Int = 7
 
+    private var highScoreService: HighScoreService? = null
+    private var mIsBound = false
+
+    private val mConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            highScoreService = (service as HighScoreService.LocalBinder).service
+            highScoreService?.login {
+                Toast.makeText(applicationContext,"Logged" , Toast.LENGTH_SHORT).show()
+            }
+        }
+        override fun onServiceDisconnected(className: ComponentName) {
+            highScoreService = null
+        }
+    }
+
+    private fun doBindService() {
+        bindService(
+            Intent(this, HighScoreService::class.java),
+            mConnection,
+            Context.BIND_AUTO_CREATE
+        )
+        mIsBound = true
+    }
+
+    private fun doUnbindService() {
+        if (mIsBound) {
+            unbindService(mConnection)
+            mIsBound = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         leftButton = findViewById(R.id.leftButton)
         bottomButton = findViewById(R.id.bottomButton)
         rightButton = findViewById(R.id.rightButton)
+        scoreboardButton = findViewById(R.id.scoreboardButton)
         gameOverTextview = findViewById(R.id.gameOverTextView)
         scoreTextView = findViewById(R.id.scoreTextView)
 
@@ -56,6 +98,11 @@ class MainActivity : AppCompatActivity() {
 
         rightButton?.setOnClickListener {
             click(Direction.RIGHT)
+        }
+
+        scoreboardButton?.setOnClickListener {
+            val intent = Intent(this,HighScoreActivity::class.java)
+            startActivity(intent)
         }
 
         Render.start {
@@ -80,13 +127,13 @@ class MainActivity : AppCompatActivity() {
 
         ActivityCompat.requestPermissions(this, permissions.toTypedArray(),PERMISSIONS_REQUEST_CODE)
 
-        val intent = Intent(this,HighScoreService::class.java)
-        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-           startForegroundService(intent)
-        }
-        else {
-            startService(intent)
-        }
+        doBindService()
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        doUnbindService()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

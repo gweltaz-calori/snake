@@ -1,4 +1,4 @@
-package com.example.snake
+package com.example.snake.game
 
 import android.content.Context
 import android.graphics.Canvas
@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Toast
 
 import com.example.snake.extensions.random
 
@@ -20,7 +19,8 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
     var score = 0
 
     var snake: Snake = Snake()
-    var apple: Apple = Apple(Tile(random(0,WIDTH),random(0,HEIGHT)))
+    var apple: Apple =
+        Apple(Tile(random(0, WIDTH), random(0, HEIGHT)))
 
     private var gameOverCallback : (() -> Unit)? = null
     private var scoreChangedCallback : (() -> Unit)? = null
@@ -76,7 +76,7 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
 
     fun resetGame() {
         snake = Snake()
-        apple = Apple(Tile(random(0,WIDTH),random(0,HEIGHT)))
+        apple = Apple(Tile(random(0, WIDTH), random(0, HEIGHT)))
         score = 0
     }
 }

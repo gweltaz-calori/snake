@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import org.w3c.dom.Document
@@ -17,20 +18,51 @@ class HighScoreService : Service() {
     private val NOTIFICATION_CHANNEL_ID = 101
     private val NOTIFICATION_CHANNEL_NAME = "WEB_CHANNEL"
 
+    val requestTask = BaseRequestTask(this)
+
+    private val mBinder = LocalBinder()
+
+    inner class LocalBinder : Binder() {
+        internal val service: HighScoreService
+            get() = this@HighScoreService
+    }
+
     override fun onBind(intent: Intent?): IBinder? {
-        return null
+        return mBinder;
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val userLoginTask = UserLoginTask(this)
+        return START_STICKY
+    }
+
+    fun login(callback : (Document) -> Unit) {
         try {
-            userLoginTask.execute(URL("http://snake.struct-it.fr/login.php?user=snake&pwd=test"))
+            requestTask.callback = callback
+            requestTask.execute(URL("http://snake.struct-it.fr/login.php?user=snake&pwd=test"))
         }
         catch (e : Exception) {
 
         }
+    }
 
-        return START_STICKY
+    fun getList(callback : (Document) -> Unit) {
+        try {
+            requestTask.callback = callback
+            requestTask.execute(URL("http://snake.struct-it.fr/score?list"))
+        }
+        catch (e : Exception) {
+
+        }
+    }
+
+    fun add(playerName:String,score: Int,callback : (Document) -> Unit ) {
+        try {
+            requestTask.callback = callback
+            requestTask.execute(URL("http://snake.struct-it.fr/score?player=$playerName&value=$score"))
+        }
+        catch (e : Exception) {
+
+        }
     }
 
     override fun onCreate() {
@@ -47,7 +79,4 @@ class HighScoreService : Service() {
         }
     }
 
-    fun onUserLogged(success: Boolean?, document: Document?) {
-        println(success)
-    }
 }

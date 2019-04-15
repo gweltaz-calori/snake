@@ -1,4 +1,4 @@
-package com.example.snake
+package com.example.snake.game
 
 import android.graphics.Canvas
 

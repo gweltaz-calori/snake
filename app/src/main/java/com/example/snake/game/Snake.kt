@@ -1,4 +1,4 @@
-package com.example.snake
+package com.example.snake.game
 
 import android.graphics.Canvas
 import android.graphics.Color
@@ -6,7 +6,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import com.example.snake.extensions.SuperRect
 
-class Snake :DrawableInterface {
+class Snake : DrawableInterface {
 
     var tiles: List<Tile> = listOf(Tile(4, 0))
     var direction : Direction = Direction.RIGHT
@@ -27,7 +27,7 @@ class Snake :DrawableInterface {
             needCollect = false
         }
 
-        tiles = listOf(Tile(head.x+direction.x,head.y + direction.y)) + newTiles
+        tiles = listOf(Tile(head.x + direction.x, head.y + direction.y)) + newTiles
     }
 
     override fun draw(canvas: Canvas) {

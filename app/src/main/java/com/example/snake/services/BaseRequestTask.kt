@@ -10,10 +10,11 @@ import java.net.HttpURLConnection
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-class UserLoginTask(val service: HighScoreService) : AsyncTask<URL, Void, Boolean>() {
+class BaseRequestTask(val service: HighScoreService) : AsyncTask<URL, Void, Boolean>() {
 
     private var document: Document? = null;
     private val MAX_ATTEMPT = 3
+    var callback : ((Document) -> Unit)? = null
 
     override fun doInBackground(vararg urls: URL?): Boolean {
         var isConnected = false
@@ -65,6 +66,8 @@ class UserLoginTask(val service: HighScoreService) : AsyncTask<URL, Void, Boolea
     }
 
     override fun onPostExecute(result: Boolean?) {
-        this.service.onUserLogged(result,this.document)
+        callback?.let { fn ->
+            fn(document!!)
+        }
     }
 }

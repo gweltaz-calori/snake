@@ -6,15 +6,15 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".activity.MainActivity">
 
 
-    <com.example.snake.GameView
+    <com.example.snake.game.GameView
             android:id="@+id/grid"
             android:layout_width="300dp"
             android:layout_height="300dp">
 
-    </com.example.snake.GameView>
+    </com.example.snake.game.GameView>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
         <Button
                 android:text="@string/top"
@@ -47,4 +47,9 @@
             android:text="Score : 0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/scoreTextView"/>
+    <Button
+            android:text="@string/scoreboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scoreboardButton"/>
 </LinearLayout>
