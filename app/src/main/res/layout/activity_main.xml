@@ -52,4 +52,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/scoreboardButton"/>
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:text="@string/enter_player_name"
+            android:ems="10"
+            android:id="@+id/playerEditText"/>
+    <Button
+            android:id="@+id/addHighScoreButton"
+            android:text="@string/add_your_highscore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 </LinearLayout>

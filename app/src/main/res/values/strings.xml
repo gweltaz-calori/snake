@@ -7,4 +7,6 @@
     <string name="left">⬅</string>
     <string name="game_over">Game Over</string>
     <string name="scoreboard">Scoreboard</string>
+    <string name="enter_player_name">Enter Player Name</string>
+    <string name="add_your_highscore">ADD YOUR HIGHSCORE</string>
 </resources>

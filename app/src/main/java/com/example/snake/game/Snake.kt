@@ -8,7 +8,7 @@ import com.example.snake.extensions.SuperRect
 
 class Snake : DrawableInterface {
 
-    var tiles: List<Tile> = listOf(Tile(4, 0))
+    var tiles: List<Tile> = listOf(Tile(0, 0))
     var direction : Direction = Direction.RIGHT
     var head = tiles.first()
     var tail = tiles.subList(1,tiles.size) //remove first element for taik

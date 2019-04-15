@@ -18,11 +18,13 @@ import android.content.ComponentName
 import android.content.Context
 import android.os.IBinder
 import android.content.ServiceConnection
+import android.widget.EditText
 import com.example.snake.game.Direction
 import com.example.snake.game.GameView
 import com.example.snake.R
 import com.example.snake.game.Render
 import android.widget.Toast
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,7 +38,9 @@ class MainActivity : AppCompatActivity() {
     private var rightButton: Button? = null
     private var bottomButton: Button? = null
     private var scoreboardButton: Button? = null
+    private var addHighScoreButton: Button? = null
     private var gameOverTextview: TextView? = null
+    private var playerTextField: EditText? = null
     private var scoreTextView: TextView? = null
     private val PERMISSIONS_REQUEST_CODE: Int = 7
 
@@ -83,6 +87,8 @@ class MainActivity : AppCompatActivity() {
         scoreboardButton = findViewById(R.id.scoreboardButton)
         gameOverTextview = findViewById(R.id.gameOverTextView)
         scoreTextView = findViewById(R.id.scoreTextView)
+        playerTextField = findViewById(R.id.playerEditText)
+        addHighScoreButton = findViewById(R.id.addHighScoreButton)
 
         topButton?.setOnClickListener {
             click(Direction.UP)
@@ -100,6 +106,17 @@ class MainActivity : AppCompatActivity() {
             click(Direction.RIGHT)
         }
 
+        addHighScoreButton?.setOnClickListener {
+            gameView?.score?.let {
+                try {
+                    highScoreService?.add(playerTextField?.text.toString(),it) {}
+                }
+                catch (e:Exception) {
+
+                }
+            }
+        }
+
         scoreboardButton?.setOnClickListener {
             val intent = Intent(this,HighScoreActivity::class.java)
             startActivity(intent)
@@ -111,11 +128,13 @@ class MainActivity : AppCompatActivity() {
 
         gameView?.onGameOver {
             gameOverTextview?.visibility = View.VISIBLE
+
             changeStatus()
         }
 
         gameView?.onScoreChanged {
             scoreTextView?.text = "Score : ${gameView?.score.toString()}"
+            println("score changed")
         }
     }
 

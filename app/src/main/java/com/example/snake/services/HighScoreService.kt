@@ -17,9 +17,6 @@ class HighScoreService : Service() {
 
     private val NOTIFICATION_CHANNEL_ID = 101
     private val NOTIFICATION_CHANNEL_NAME = "WEB_CHANNEL"
-
-    val requestTask = BaseRequestTask(this)
-
     private val mBinder = LocalBinder()
 
     inner class LocalBinder : Binder() {
@@ -37,8 +34,8 @@ class HighScoreService : Service() {
 
     fun login(callback : (Document) -> Unit) {
         try {
-            requestTask.callback = callback
-            requestTask.execute(URL("http://snake.struct-it.fr/login.php?user=snake&pwd=test"))
+            val request = BaseRequestTask(callback)
+            request.execute(URL("http://snake.struct-it.fr/login.php?user=snake&pwd=test"))
         }
         catch (e : Exception) {
 
@@ -47,8 +44,8 @@ class HighScoreService : Service() {
 
     fun getList(callback : (Document) -> Unit) {
         try {
-            requestTask.callback = callback
-            requestTask.execute(URL("http://snake.struct-it.fr/score?list"))
+            val request = BaseRequestTask(callback)
+            request.execute(URL("http://snake.struct-it.fr/score?list"))
         }
         catch (e : Exception) {
 
@@ -57,8 +54,8 @@ class HighScoreService : Service() {
 
     fun add(playerName:String,score: Int,callback : (Document) -> Unit ) {
         try {
-            requestTask.callback = callback
-            requestTask.execute(URL("http://snake.struct-it.fr/score?player=$playerName&value=$score"))
+            val request = BaseRequestTask(callback)
+            request.execute(URL("http://snake.struct-it.fr/score?player=$playerName&value=$score"))
         }
         catch (e : Exception) {
 
