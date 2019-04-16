@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".fragments.GameFragment">
+
+    <LinearLayout
+            android:visibility="visible"
+            android:id="@+id/gameIntroLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+
+        <TextView
+                android:id="@+id/snake"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/snake"
+                android:textColor="@color/colorPrimary"
+                android:textAppearance="@style/snake"
+                android:gravity="center_horizontal|center_vertical"
+        />
+
+        <TextView
+                android:id="@+id/welcome_to_"
+                android:layout_width="229.29dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/description_color"
+                android:text="@string/welcome_description"
+                android:textAppearance="@style/welcome_description"
+                android:gravity="center_horizontal|center_vertical"
+        />
+
+        <Button
+                android:layout_marginTop="42dp"
+                android:text="@string/play_game"
+                android:textColor="@android:color/white"
+                android:id="@+id/playGameButton"
+                android:layout_width="186.6dp"
+                android:layout_height="56dp"
+                android:background="@drawable/rectangle"
+        />
+    </LinearLayout>
+
+    <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/gameOverLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/game_over"
+                android:textColor="@color/colorPrimary"
+                android:textAppearance="@style/snake"
+                android:gravity="center_horizontal|center_vertical"
+        />
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:layout_marginTop="30dp"
+                android:hint="@string/player_name"
+                android:id="@+id/playerNameEditText"/>
+
+        <Button
+                android:text="@string/send_highscore"
+                android:layout_marginBottom="18dp"
+                android:textColor="@android:color/white"
+                android:id="@+id/sendHighscoreButton"
+                android:layout_width="186.6dp"
+                android:layout_height="56dp"
+                android:background="@drawable/rectangle"
+        />
+
+        <Button
+                android:text="@string/play_again"
+                android:textColor="@android:color/white"
+                android:id="@+id/playAgainButton"
+                android:layout_width="186.6dp"
+                android:layout_height="56dp"
+                android:background="@drawable/rectangle"
+        />
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/gameLayout"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="@dimen/game_size"
+            android:layout_height="wrap_content">
+
+        <RelativeLayout
+                android:layout_marginBottom="26dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            <LinearLayout
+                    android:layout_alignParentEnd="true"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:id="@+id/score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="@string/score"
+                        android:textColor="@color/colorPrimary"
+                        android:textAppearance="@style/score_title"
+                />
+
+                <TextView
+                        android:id="@+id/scoreValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:textColor="@color/score_color"
+                        android:text="0"
+                        android:textAppearance="@style/score_title"
+                />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <com.example.snake.game.GameView
+                android:id="@+id/gameView"
+                android:layout_width="300dp"
+                android:layout_height="300dp">
+
+        </com.example.snake.game.GameView>
+
+        <RelativeLayout
+                android:layout_marginTop="28dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <Button
+                    android:layout_width="26dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/topButton"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/vertical_controller"/>
+
+            <Button
+                    android:layout_width="40dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_height="26dp"
+                    android:id="@+id/leftButton"
+                    android:background="@drawable/horizontal_controller"/>
+
+            <Button
+                    android:layout_width="26dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_height="26dp"
+                    android:background="@drawable/horizontal_controller"/>
+
+            <Button
+                    android:layout_marginTop="40dp"
+                    android:layout_marginStart="66dp"
+                    android:layout_width="40dp"
+                    android:layout_height="26dp"
+                    android:id="@+id/rightButton"
+                    android:background="@drawable/horizontal_controller"
+            />
+
+            <Button
+                    android:layout_width="26dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/bottomButton"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="66dp"
+                    android:background="@drawable/vertical_controller"/>
+
+
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>
