@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     private var scoreboardButton: Button? = null
     private var addHighScoreButton: Button? = null
     private var gameOverTextview: TextView? = null
+    private var gameWinTextview: TextView? = null
     private var playerTextField: EditText? = null
     private var scoreTextView: TextView? = null
     private val PERMISSIONS_REQUEST_CODE: Int = 7
@@ -91,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         rightButton = findViewById(R.id.rightButton)
         scoreboardButton = findViewById(R.id.scoreboardButton)
         gameOverTextview = findViewById(R.id.gameOverTextView)
+        gameWinTextview = findViewById(R.id.gameWinTextView)
         scoreTextView = findViewById(R.id.scoreTextView)
         playerTextField = findViewById(R.id.playerEditText)
         addHighScoreButton = findViewById(R.id.addHighScoreButton)
@@ -146,6 +148,11 @@ class MainActivity : AppCompatActivity() {
             gameOverTextview?.visibility = View.VISIBLE
             menu?.getItem(0)?.setIcon(R.drawable.ic_play)
             isPlaying = false
+        }
+
+        gameView?.onGameWin {
+            gameWinTextview?.visibility = View.VISIBLE
+            changeStatus()
         }
 
         gameView?.onScoreChanged {

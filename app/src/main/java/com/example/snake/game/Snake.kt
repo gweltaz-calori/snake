@@ -6,14 +6,17 @@ import android.graphics.Paint
 import android.graphics.Rect
 import com.example.snake.extensions.SuperRect
 
-class Snake : DrawableInterface {
+open class Snake(
+    var tiles: List<Tile> = listOf(Tile(0, 0)),
+    var direction: Direction = Direction.RIGHT,
+    val color: Int = Color.RED,
+    val limit1: Tile,
+    val limit2: Tile
+) : DrawableInterface {
 
     companion object {
         var TILE_SIZE = 40
     }
-
-    var tiles: List<Tile> = listOf(Tile(0, 0)) // list of each tile the snake is
-    var direction : Direction = Direction.RIGHT // which direction the snake should go
     var head = tiles.first() //head is the first element
     var tail = tiles.subList(1,tiles.size) //remove first element for taik
     val size = Snake.TILE_SIZE // snake size
@@ -27,7 +30,7 @@ class Snake : DrawableInterface {
         var newTiles = tiles.dropLast(1) //keep same size
 
         //grow by one
-        if(needCollect) {
+        if (needCollect) {
             newTiles = tiles
             needCollect = false
         }
@@ -37,7 +40,7 @@ class Snake : DrawableInterface {
 
     override fun draw(canvas: Canvas) {
         val paint = Paint()
-        paint.color = Color.RED
+        paint.color = color
         val newX = head.x
         val newY = head.y
         canvas.drawRect(Rect(newX,newY,newX + size,newY + size), paint) // draw the head
@@ -60,9 +63,16 @@ class Snake : DrawableInterface {
     fun doesHitHimself(): Boolean {
         return tail.find { SuperRect.intersects(SuperRect(head.x,head.y,size,size),SuperRect(it.x,it.y,size,size)) } != null
     }
+
+    fun doesHitBounds(): Boolean {
+        tiles.find { (it.x < limit1.x || it.x > limit2.x - size) || (it.y < limit1.y || it.y > limit2.y - size) }
+            ?: return false
+        return true
+    }
 }
 
 enum class Direction(val x: Int, val y: Int) {
+    STOP(0, 0),
     UP(0, -Snake.TILE_SIZE),
     DOWN(0, Snake.TILE_SIZE),
     LEFT(-Snake.TILE_SIZE, 0),

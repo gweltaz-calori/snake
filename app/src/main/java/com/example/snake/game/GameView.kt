@@ -20,14 +20,21 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
     val BORDER_PAINT = Paint()
 
     val bounds = Rect(0,0,WIDTH,HEIGHT)
+    val limit1 = Tile(bounds.left, bounds.top)
+    val limit2 = Tile(bounds.right, bounds.bottom)
     var score = 0
 
-    var snake: Snake = Snake()
+    var snakeAI: SnakeAI = SnakeAI(
+        listOf(Tile(
+            WIDTH - Snake.TILE_SIZE, HEIGHT - Snake.TILE_SIZE)),
+        _limit1 = limit1, _limit2 = limit2
+    )
+    var snake: Snake = Snake(limit1 = limit1, limit2 = limit2)
     var apple: Apple = getRandomApple()
-
 
     //these callback are called from the activity to know when the player has lost or the score has changed
     private var gameOverCallback : (() -> Unit)? = null
+    private var gameWinCallback : (() -> Unit)? = null
     private var scoreChangedCallback : (() -> Unit)? = null
 
 
@@ -38,49 +45,64 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
 
         canvas.drawRect(bounds,BORDER_PAINT)
 
-        // if we also hit the game bounds we lost the game
-        doesSnakeHitGameBounds()?.let {
-            gameOverCallback?.let { it() }
-        } ?: kotlin.run { // otherwise we are inside the game bounds
+        val snakeHitBounds = snake.doesHitBounds()
+        val snakeAIHitBounds = snakeAI.doesHitBounds()
 
-            //update all the objects positions
+        if (snakeHitBounds) {
+            gameOverCallback?.let { it() }
+        } else if (snakeAIHitBounds) {
+            gameWinCallback?.let { it() }
+        } else {
+            snakeAI.findApple(apple)
+
+            snakeAI.update()
             snake.update()
             apple.update()
 
-            //draw each object onto the canvas
+            snakeAI.draw(canvas)
             snake.draw(canvas)
             apple.draw(canvas)
 
-            // if our snake interesects the apple score change
-            if(snake.intersectsApple(apple)) {
-                onScoreChanged()
+            if (snake.intersectsApple(apple)) {
+                onScoreChanged(1)
+            }
+            if (snakeAI.intersectsApple(apple)) {
+                onScoreChanged(-1)
             }
 
             // the snake ate himself so we lost the game when can trigger the callback
             if (snake.doesHitHimself()) {
                 gameOverCallback?.let { it() }
             }
+            if (snakeAI.doesHitHimself()) {
+                gameWinCallback?.let { it() }
+            }
+            // TODO: check that two snakes doesn't collide
         }
     }
 
-    private fun doesSnakeHitGameBounds(): Tile? {
-        return snake.tiles.find { (it.x < 0 || it.x > WIDTH - snake.size) || (it.y < 0 || it.y > HEIGHT - snake.size) }
-    }
-
-    private fun onScoreChanged() {
-        //set the new position for the apple
-
+    private fun onScoreChanged(inc: Int) {
         val randomApple = getRandomApple()
 
         apple.position.x = randomApple.position.x
         apple.position.y = randomApple.position.y
-        score++ //increase the score
-        scoreChangedCallback?.invoke() //call the callback
-        snake.needCollect = true // we need to increase snake size
+
+        if (inc > 0) {
+            // if inc is positive, that means the player eat the apple
+            score++
+            scoreChangedCallback?.invoke()
+            snake.needCollect = true
+        } else {
+            snakeAI.needCollect = true
+        }
     }
 
     fun onGameOver(onGameOver: () -> Unit) {
         gameOverCallback = onGameOver
+    }
+
+    fun onGameWin(onGameWin: () -> Unit) {
+        gameWinCallback = onGameWin
     }
 
     fun onScoreChanged(onScoreChanged : () -> Unit) {
@@ -101,7 +123,11 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
     }
 
     fun resetGame() {
-        snake = Snake()
+        snakeAI = SnakeAI(
+            listOf(Tile(WIDTH - Snake.TILE_SIZE, HEIGHT - Snake.TILE_SIZE)),
+            _limit1 = limit1, _limit2 = limit2
+        )
+        snake = Snake(limit1 = limit1, limit2 = limit2)
         apple = getRandomApple()
         score = 0
     }
