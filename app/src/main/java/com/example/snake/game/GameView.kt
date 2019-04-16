@@ -77,7 +77,6 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
             if (snakeAI.doesHitHimself()) {
                 gameWinCallback?.let { it() }
             }
-            // TODO: check that two snakes doesn't collide
         }
     }
 
