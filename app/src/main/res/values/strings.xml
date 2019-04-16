@@ -24,4 +24,6 @@
     <string name="play_again">PLAY AGAIN</string>
     <string name="player_name">Player Name</string>
     <string name="send_highscore">Send highscore</string>
+    <string name="ia_score">IA Score</string>
+    <string name="win_against_ia">You win against IA</string>
 </resources>

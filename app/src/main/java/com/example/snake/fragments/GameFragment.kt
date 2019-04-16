@@ -6,21 +6,17 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
-import android.support.v4.app.ActivityCompat
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
 import com.example.snake.R
 import com.example.snake.game.Direction
 import com.example.snake.game.Render
 import com.example.snake.services.HighScoreService
 import kotlinx.android.synthetic.main.fragment_game.*
-import java.lang.Exception
-import android.support.design.widget.Snackbar
-
-
 
 class GameFragment : Fragment() {
 
@@ -136,6 +132,12 @@ class GameFragment : Fragment() {
                                 )
                                 snackBar.show()
                             }
+
+                            val v = activity?.window?.currentFocus
+                            if (v != null) {
+                                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                            }
                         }
                         else {
                             activity?.let {
@@ -164,6 +166,12 @@ class GameFragment : Fragment() {
             gameOverLayout.visibility = View.VISIBLE
         }
 
+        gameView?.onGameWin {
+            gameLayout.visibility = View.GONE
+            gameOverText.text = getString(R.string.win_against_ia)
+
+            gameOverLayout.visibility = View.VISIBLE
+        }
 
         gameView?.onScoreChanged {
             setScore()
@@ -174,6 +182,7 @@ class GameFragment : Fragment() {
         gameIntroLayout.visibility = View.GONE
         gameLayout.visibility = View.VISIBLE
         gameOverLayout.visibility = View.GONE
+        gameOverText.text = getString(R.string.game_over)
 
         setScore()
         gameView?.resetGame()
@@ -199,7 +208,7 @@ class GameFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_game, container, false)
+        return inflater.inflate(com.example.snake.R.layout.fragment_game, container, false)
     }
 
     companion object {
