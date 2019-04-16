@@ -9,14 +9,14 @@ import com.example.snake.extensions.SuperRect
 class Snake : DrawableInterface {
 
     companion object {
-        var SPEED = 40
+        var TILE_SIZE = 40
     }
 
     var tiles: List<Tile> = listOf(Tile(0, 0)) // list of each tile the snake is
     var direction : Direction = Direction.RIGHT // which direction the snake should go
     var head = tiles.first() //head is the first element
     var tail = tiles.subList(1,tiles.size) //remove first element for taik
-    val size = 40 // snake size
+    val size = Snake.TILE_SIZE // snake size
     var needCollect = false // do we need to increase snake size
 
     //called each frame
@@ -63,10 +63,10 @@ class Snake : DrawableInterface {
 }
 
 enum class Direction(val x: Int, val y: Int) {
-    UP(0, -Snake.SPEED),
-    DOWN(0, Snake.SPEED),
-    LEFT(-Snake.SPEED, 0),
-    RIGHT(Snake.SPEED, 0);
+    UP(0, -Snake.TILE_SIZE),
+    DOWN(0, Snake.TILE_SIZE),
+    LEFT(-Snake.TILE_SIZE, 0),
+    RIGHT(Snake.TILE_SIZE, 0);
 }
 
 data class Tile(var x :Int,var y: Int)

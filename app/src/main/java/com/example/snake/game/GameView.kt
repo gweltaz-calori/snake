@@ -23,8 +23,8 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
     var score = 0
 
     var snake: Snake = Snake()
-    var apple: Apple =
-        Apple(Tile(random(0, WIDTH), random(0, HEIGHT)))
+    var apple: Apple = getRandomApple()
+
 
     //these callback are called from the activity to know when the player has lost or the score has changed
     private var gameOverCallback : (() -> Unit)? = null
@@ -69,8 +69,11 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
 
     private fun onScoreChanged() {
         //set the new position for the apple
-        apple.position.x = random(0,WIDTH)
-        apple.position.y = random(0,HEIGHT)
+
+        val randomApple = getRandomApple()
+
+        apple.position.x = randomApple.position.x
+        apple.position.y = randomApple.position.y
         score++ //increase the score
         scoreChangedCallback?.invoke() //call the callback
         snake.needCollect = true // we need to increase snake size
@@ -88,6 +91,10 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
         snake.direction = direction
     }
 
+    fun getRandomApple(): Apple {
+        return Apple(Tile((random(0, WIDTH / Snake.TILE_SIZE)) * Snake.TILE_SIZE, (random(0, HEIGHT / Snake.TILE_SIZE))* Snake.TILE_SIZE))
+    }
+
     fun initGame() {
         layoutParams.width = WIDTH
         layoutParams.height = HEIGHT
@@ -95,7 +102,7 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
 
     fun resetGame() {
         snake = Snake()
-        apple = Apple(Tile(random(0, WIDTH), random(0, HEIGHT)))
+        apple = getRandomApple()
         score = 0
     }
 }
