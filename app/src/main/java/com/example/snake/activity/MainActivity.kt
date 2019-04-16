@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onUpdate() {
-        if(isPlaying) {
+        if (isPlaying) {
             gameView?.invalidate()
         }
     }

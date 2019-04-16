@@ -35,7 +35,9 @@ open class Snake(
             needCollect = false
         }
 
-        tiles = listOf(Tile(head.x + direction.x, head.y + direction.y)) + newTiles //the new tiles list
+        head.x += direction.x
+        head.y += direction.y
+        tiles = listOf(Tile(head.x, head.y)) + newTiles //the new tiles list
     }
 
     override fun draw(canvas: Canvas) {
@@ -72,7 +74,6 @@ open class Snake(
 }
 
 enum class Direction(val x: Int, val y: Int) {
-    STOP(0, 0),
     UP(0, -Snake.TILE_SIZE),
     DOWN(0, Snake.TILE_SIZE),
     LEFT(-Snake.TILE_SIZE, 0),

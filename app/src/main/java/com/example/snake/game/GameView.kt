@@ -48,9 +48,9 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
         val snakeHitBounds = snake.doesHitBounds()
         val snakeAIHitBounds = snakeAI.doesHitBounds()
 
-        if (snakeHitBounds) {
+        /* if (snakeHitBounds) {
             gameOverCallback?.let { it() }
-        } else if (snakeAIHitBounds) {
+        } else */ if (snakeAIHitBounds) {
             gameWinCallback?.let { it() }
         } else {
             snakeAI.findApple(apple)

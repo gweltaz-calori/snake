@@ -19,14 +19,14 @@ class SnakeAI(
     /**
      * This compute the distance between the head snake and the apple
      * It apply the appropriate direction depends on previous calculation (vector snake-apple)
-     * Before setting the new direction, it check that new direction is not invalid and that the snake will not hit bounds
+     * Before setting the new direction, it check that new direction will not hit something
      * */
     fun findApple(apple: Apple) {
         // vector snake apple
         val vSAx = apple.position.x - head.x
         val vSAy = apple.position.y - head.y
 
-        var nextDir = Direction.STOP
+        var nextDir:Direction = Direction.UP
         if (abs(vSAx) > abs(vSAy)) {
             if (vSAx < 0) {
                 nextDir = Direction.LEFT
@@ -42,44 +42,30 @@ class SnakeAI(
                 nextDir = Direction.DOWN
             }
         }
-        if (nextDirIsInvalid(direction, nextDir)) {
-            nextDir = computeCircumvention(nextDir)
-        }
-        if (willHitBounds(nextDir)) {
-            nextDir = computeCircumvention(nextDir)
+        if (willHitSomething(nextDir)) {
+            Direction.values().find {
+                !willHitSomething(it)
+            }?.let { nextDir = it }
         }
         direction = nextDir
     }
 
-    /* fun willHitHimself(nextDir: Direction) {
-
-    } */
-
-    // TODO: delete this and replace it by snake detection of itself
-    fun nextDirIsInvalid(prevDir: Direction, nextDir: Direction): Boolean {
-        // this check that the snake doesn't do half turn
-        return nextDir.x != prevDir.x && nextDir.x + prevDir.x == 0
-            || nextDir.y != prevDir.y && nextDir.y + prevDir.y == 0
+    private fun willHitSomething(nextDir: Direction): Boolean {
+        return willHitHimself(nextDir) || willHitBounds(nextDir)
     }
 
-    // TODO: refactor this to make a smarter calculation
-    fun computeCircumvention(nextDir: Direction): Direction {
-        if (nextDir.x == 0) {
-            // snake is going up or down and need to go left or right
-            if (random(0, 2) < 1) return Direction.RIGHT
-            return Direction.LEFT
-        }
-        // snake is going left or right and need to go up or down
-        if (random(0, 2) < 1) return Direction.UP
-        return Direction.DOWN
-    }
-
-    fun willHitBounds(nextDir: Direction): Boolean {
-        tiles.find {
-            (it.x + nextDir.x < limit1.x || it.x + nextDir.x > limit2.x - size)
-            || (it.y + nextDir.y < limit1.y || it.y + nextDir.y > limit2.y - size) }
-            ?: return false
+    private fun willHitHimself(nextDir: Direction): Boolean {
+        tail.find {
+            it.x == head.x + nextDir.x && it.y == head.y + nextDir.y
+        }?: return false
         return true
+    }
+
+    private fun willHitBounds(nextDir: Direction): Boolean {
+        return (
+                head.x + nextDir.x < limit1.x || head.x + nextDir.x > limit2.x - size
+                ) || (
+                head.y + nextDir.y < limit1.y || head.y + nextDir.y > limit2.y - size)
     }
 
 }
