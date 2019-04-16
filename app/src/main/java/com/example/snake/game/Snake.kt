@@ -15,7 +15,7 @@ open class Snake(
 ) : DrawableInterface {
 
     companion object {
-        var TILE_SIZE = 40
+        var TILE_SIZE = 50
     }
     var head = tiles.first() //head is the first element
     var tail = tiles.subList(1,tiles.size) //remove first element for taik

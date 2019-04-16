@@ -9,7 +9,7 @@ import android.graphics.Rect
 class Apple(tile: Tile) : DrawableInterface {
 
     val position: Tile = tile
-    val size = 40
+    val size = Snake.TILE_SIZE
 
     override fun update() {
 
