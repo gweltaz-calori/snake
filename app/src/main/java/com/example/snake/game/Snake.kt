@@ -6,13 +6,19 @@ import android.graphics.Paint
 import android.graphics.Rect
 import com.example.snake.extensions.SuperRect
 
-class Snake : DrawableInterface {
+open class Snake(
+    var tiles: List<Tile> = listOf(Tile(0, 0)),
+    var direction: Direction = Direction.RIGHT,
+    val color: Int = Color.RED
+) : DrawableInterface {
 
-    var tiles: List<Tile> = listOf(Tile(4, 0))
-    var direction : Direction = Direction.RIGHT
+    companion object {
+        val size = 40
+    }
+
     var head = tiles.first()
-    var tail = tiles.subList(1,tiles.size) //remove first element for taik
-    val size = 40
+    var tail = tiles.subList(1,tiles.size) //remove first element for tail
+    val size = Snake.size
     var needCollect = false
 
     override fun update() {
@@ -32,7 +38,7 @@ class Snake : DrawableInterface {
 
     override fun draw(canvas: Canvas) {
         val paint = Paint()
-        paint.color = Color.RED
+        paint.color = color
         val newX = head.x
         val newY = head.y
         canvas.drawRect(Rect(newX,newY,newX + size,newY + size), paint)
@@ -52,6 +58,12 @@ class Snake : DrawableInterface {
 
     fun doesHitHimself(): Boolean {
         return tail.find { SuperRect.intersects(SuperRect(head.x,head.y,size,size),SuperRect(it.x,it.y,size,size)) } != null
+    }
+
+    fun doesHitBounds(limit1: Tile, limit2: Tile): Boolean {
+        tiles.find { (it.x < limit1.x || it.x > limit2.x - size) || (it.y < limit1.y || it.y > limit2.y - size) }
+            ?: return false
+        return true
     }
 }
 

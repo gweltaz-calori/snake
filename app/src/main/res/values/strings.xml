@@ -6,5 +6,6 @@
     <string name="right">➡</string>
     <string name="left">⬅</string>
     <string name="game_over">Game Over</string>
+    <string name="win">Win!</string>
     <string name="scoreboard">Scoreboard</string>
 </resources>

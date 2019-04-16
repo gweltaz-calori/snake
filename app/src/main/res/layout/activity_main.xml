@@ -44,6 +44,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/gameOverTextView"/>
     <TextView
+            android:visibility="invisible"
+            android:text="@string/win"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/gameWinTextView"/>
+    <TextView
             android:text="Score : 0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/scoreTextView"/>

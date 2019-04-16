@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var bottomButton: Button? = null
     private var scoreboardButton: Button? = null
     private var gameOverTextview: TextView? = null
+    private var gameWinTextview: TextView? = null
     private var scoreTextView: TextView? = null
     private val PERMISSIONS_REQUEST_CODE: Int = 7
 
@@ -82,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         rightButton = findViewById(R.id.rightButton)
         scoreboardButton = findViewById(R.id.scoreboardButton)
         gameOverTextview = findViewById(R.id.gameOverTextView)
+        gameWinTextview = findViewById(R.id.gameWinTextView)
         scoreTextView = findViewById(R.id.scoreTextView)
 
         topButton?.setOnClickListener {
@@ -111,6 +113,11 @@ class MainActivity : AppCompatActivity() {
 
         gameView?.onGameOver {
             gameOverTextview?.visibility = View.VISIBLE
+            changeStatus()
+        }
+
+        gameView?.onGameWin {
+            gameWinTextview?.visibility = View.VISIBLE
             changeStatus()
         }
 
