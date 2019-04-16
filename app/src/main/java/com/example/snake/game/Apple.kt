@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 
+// The apple will be drawn onto the canvas
 class Apple(tile: Tile) : DrawableInterface {
 
     val position: Tile = tile

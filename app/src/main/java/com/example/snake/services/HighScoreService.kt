@@ -13,13 +13,11 @@ import org.w3c.dom.Document
 import java.lang.Exception
 import java.net.URL
 
+// That's the service that will deal with the high score
 class HighScoreService : Service() {
 
     private val NOTIFICATION_CHANNEL_ID = 101
     private val NOTIFICATION_CHANNEL_NAME = "WEB_CHANNEL"
-
-    val requestTask = BaseRequestTask(this)
-
     private val mBinder = LocalBinder()
 
     inner class LocalBinder : Binder() {
@@ -35,33 +33,35 @@ class HighScoreService : Service() {
         return START_STICKY
     }
 
-    fun login(callback : (Document) -> Unit) {
+    //call the login web service
+    fun login(callback : (Document?,Boolean) -> Unit) {
         try {
-            requestTask.callback = callback
-            requestTask.execute(URL("http://snake.struct-it.fr/login.php?user=snake&pwd=test"))
+            val request = BaseRequestTask(callback)
+            request.execute(URL("http://snake.struct-it.fr/login.php?user=snake&pwd=test"))
         }
         catch (e : Exception) {
 
         }
     }
 
-    fun getList(callback : (Document) -> Unit) {
+    //call the list webservice
+    fun getList(callback : (Document?,Boolean) -> Unit) {
         try {
-            requestTask.callback = callback
-            requestTask.execute(URL("http://snake.struct-it.fr/score?list"))
+            val request = BaseRequestTask(callback)
+            request.execute(URL("http://snake.struct-it.fr/score?list"))
         }
         catch (e : Exception) {
 
         }
     }
 
-    fun add(playerName:String,score: Int,callback : (Document) -> Unit ) {
+    //call the add web service
+    fun add(playerName:String,score: Int,callback : (Document?,Boolean) -> Unit ) {
         try {
-            requestTask.callback = callback
-            requestTask.execute(URL("http://snake.struct-it.fr/score?player=$playerName&value=$score"))
+            val request = BaseRequestTask(callback)
+            request.execute(URL("http://snake.struct-it.fr/score?player=$playerName&value=$score"))
         }
         catch (e : Exception) {
-
         }
     }
 

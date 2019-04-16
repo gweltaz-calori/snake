@@ -10,24 +10,28 @@ import java.net.HttpURLConnection
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-class BaseRequestTask(val service: HighScoreService) : AsyncTask<URL, Void, Boolean>() {
+// the purpose of this task is to make request and retrieve xml
+class BaseRequestTask(val callback: (Document?,Boolean) -> Unit) : AsyncTask<URL, Void, Boolean>() {
 
     private var document: Document? = null;
     private val MAX_ATTEMPT = 3
-    var callback : ((Document) -> Unit)? = null
 
     override fun doInBackground(vararg urls: URL?): Boolean {
         var isConnected = false
         var nbAttempt = 0
         try {
             do {
+                val cookieManager = android.webkit.CookieManager.getInstance()
                 val connection: HttpURLConnection = urls[0]?.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.doOutput = true
                 connection.connectTimeout = 10000
                 connection.readTimeout = 5000
-                connection.connect()
 
+                cookieManager.getCookie("snake")?.let {
+                    connection.setRequestProperty("Cookie",it)
+                }
+                connection.connect()
                 if(connection.responseCode == HttpURLConnection.HTTP_OK) {
 
                     val headerFields = connection.headerFields
@@ -66,8 +70,8 @@ class BaseRequestTask(val service: HighScoreService) : AsyncTask<URL, Void, Bool
     }
 
     override fun onPostExecute(result: Boolean?) {
-        callback?.let { fn ->
-            fn(document!!)
+        result?.let {
+            callback(document,it)
         }
     }
 }

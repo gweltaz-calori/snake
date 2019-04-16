@@ -7,7 +7,8 @@ import android.widget.TextView
 import com.example.snake.R
 import com.example.snake.model.Score
 
-class HighScoreAdapter(private val myDataset: List<Score>) :
+// The adapter for the high score
+class HighScoreAdapter(private val myDataset: ArrayList<Score>) :
     RecyclerView.Adapter<HighScoreAdapter.MyViewHolder>() {
 
     class MyViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
@@ -25,4 +26,15 @@ class HighScoreAdapter(private val myDataset: List<Score>) :
     }
 
     override fun getItemCount() = myDataset.size
-}
+
+    fun addAllScores(scores:List<Score>) {
+        scores.forEach {
+            addScore(it)
+        }
+    }
+
+    fun addScore(score: Score) {
+        myDataset.add(score);
+        notifyItemInserted(myDataset.size - 1);
+    }
+ }
