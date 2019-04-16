@@ -47,9 +47,10 @@ open class Snake(
         val newY = head.y
         canvas.drawRect(Rect(newX,newY,newX + size,newY + size), paint) // draw the head
 
-        tail.forEach { // draw each tile from the tail
-            val newTailX = it.x
-            val newTailY = it.y
+        tail.forEachIndexed { index, tile -> // draw each tile from the tail
+            val newTailX = tile.x
+            val newTailY = tile.y
+            paint.alpha = 255 - 127 * index / tail.count()
             canvas.drawRect(Rect(newTailX ,newTailY,newTailX + size ,newTailY + size ), paint)
         }
     }
