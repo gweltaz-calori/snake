@@ -8,16 +8,21 @@ import com.example.snake.extensions.SuperRect
 
 class Snake : DrawableInterface {
 
-    var tiles: List<Tile> = listOf(Tile(0, 0))
-    var direction : Direction = Direction.RIGHT
-    var head = tiles.first()
-    var tail = tiles.subList(1,tiles.size) //remove first element for taik
-    val size = 40
-    var needCollect = false
+    companion object {
+        var SPEED = 40
+    }
 
+    var tiles: List<Tile> = listOf(Tile(0, 0)) // list of each tile the snake is
+    var direction : Direction = Direction.RIGHT // which direction the snake should go
+    var head = tiles.first() //head is the first element
+    var tail = tiles.subList(1,tiles.size) //remove first element for taik
+    val size = 40 // snake size
+    var needCollect = false // do we need to increase snake size
+
+    //called each frame
     override fun update() {
-        head = tiles.first()
-        tail = tiles.subList(1,tiles.size)
+        head = tiles.first() // the new head
+        tail = tiles.subList(1,tiles.size) // the new tail
 
         var newTiles = tiles.dropLast(1) //keep same size
 
@@ -27,7 +32,7 @@ class Snake : DrawableInterface {
             needCollect = false
         }
 
-        tiles = listOf(Tile(head.x + direction.x, head.y + direction.y)) + newTiles
+        tiles = listOf(Tile(head.x + direction.x, head.y + direction.y)) + newTiles //the new tiles list
     }
 
     override fun draw(canvas: Canvas) {
@@ -35,31 +40,33 @@ class Snake : DrawableInterface {
         paint.color = Color.RED
         val newX = head.x
         val newY = head.y
-        canvas.drawRect(Rect(newX,newY,newX + size,newY + size), paint)
+        canvas.drawRect(Rect(newX,newY,newX + size,newY + size), paint) // draw the head
 
-        tail.forEach {
+        tail.forEach { // draw each tile from the tail
             val newTailX = it.x
             val newTailY = it.y
             canvas.drawRect(Rect(newTailX ,newTailY,newTailX + size ,newTailY + size ), paint)
         }
     }
 
+    //check if the snake intersects with the apple
     fun intersectsApple(apple: Apple): Boolean {
         return SuperRect.intersects(SuperRect(head.x,head.y,size,size),
             SuperRect(apple.position.x,apple.position.y,apple.size,apple.size)
         )
     }
 
+    //check if the snake hit himself
     fun doesHitHimself(): Boolean {
         return tail.find { SuperRect.intersects(SuperRect(head.x,head.y,size,size),SuperRect(it.x,it.y,size,size)) } != null
     }
 }
 
 enum class Direction(val x: Int, val y: Int) {
-    UP(0, -40),
-    DOWN(0, 40),
-    LEFT(-40, 0),
-    RIGHT(40, 0);
+    UP(0, -Snake.SPEED),
+    DOWN(0, Snake.SPEED),
+    LEFT(-Snake.SPEED, 0),
+    RIGHT(Snake.SPEED, 0);
 }
 
 data class Tile(var x :Int,var y: Int)

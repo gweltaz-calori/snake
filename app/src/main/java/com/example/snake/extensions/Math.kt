@@ -2,12 +2,13 @@ package com.example.snake.extensions
 
 import java.util.*
 
+// random between 2 numbers
 fun random ( min:Int,  max : Int): Int {
     val r = Random()
     return r.nextInt(max - min) + min
 }
 
-
+// Rect helper class
 data class SuperRect(val x: Int,val y:Int,val width:Int,val height:Int) {
     companion object {
         fun intersects(a:SuperRect,b:SuperRect): Boolean {

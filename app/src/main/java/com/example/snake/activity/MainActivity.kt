@@ -50,8 +50,13 @@ class MainActivity : AppCompatActivity() {
     private val mConnection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             highScoreService = (service as HighScoreService.LocalBinder).service
-            highScoreService?.login {
-                Toast.makeText(applicationContext,"Logged" , Toast.LENGTH_SHORT).show()
+            highScoreService?.login { doc, success ->
+                if(success) {
+                    Toast.makeText(applicationContext,"Connecté" , Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    Toast.makeText(applicationContext,"Impossible de se connecter au serveur" , Toast.LENGTH_SHORT).show()
+                }
             }
         }
         override fun onServiceDisconnected(className: ComponentName) {
@@ -90,6 +95,8 @@ class MainActivity : AppCompatActivity() {
         playerTextField = findViewById(R.id.playerEditText)
         addHighScoreButton = findViewById(R.id.addHighScoreButton)
 
+        gameView?.initGame()
+
         topButton?.setOnClickListener {
             click(Direction.UP)
         }
@@ -109,10 +116,17 @@ class MainActivity : AppCompatActivity() {
         addHighScoreButton?.setOnClickListener {
             gameView?.score?.let {
                 try {
-                    highScoreService?.add(playerTextField?.text.toString(),it) {}
+                    println("score $it")
+                    highScoreService?.add(playerTextField?.text.toString(),it) { doc, success ->
+                        if(!success) {
+                            Toast.makeText(applicationContext,"Ce nom d'utilisateur existe déja",Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+                            Toast.makeText(applicationContext,"Votre score a été enregistré",Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
                 catch (e:Exception) {
-
                 }
             }
         }
@@ -122,19 +136,20 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+
+        //start calling onUpdate each frame
         Render.start {
             onUpdate()
         }
 
         gameView?.onGameOver {
             gameOverTextview?.visibility = View.VISIBLE
-
-            changeStatus()
+            menu?.getItem(0)?.setIcon(R.drawable.ic_play)
+            isPlaying = false
         }
 
         gameView?.onScoreChanged {
             scoreTextView?.text = "Score : ${gameView?.score.toString()}"
-            println("score changed")
         }
     }
 
@@ -153,35 +168,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         doUnbindService()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            PERMISSIONS_REQUEST_CODE -> if (permissions.size === 3) {
-                if (grantResults[0] === PackageManager.PERMISSION_GRANTED && grantResults[1] === PackageManager.PERMISSION_GRANTED && grantResults[2] === PackageManager.PERMISSION_GRANTED) {
-                    Log.d("Snake", "Permissions granted")
-                    val intent = Intent(this, HighScoreService::class.java)
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(intent)
-                    } else {
-                        startService(intent)
-                    }
-                } else {
-                    if (grantResults[0] !== PackageManager.PERMISSION_GRANTED) {
-                        Log.d("Snake", "Wake Lock permission not granted")
-                    }
-                    if (grantResults[1] !== PackageManager.PERMISSION_GRANTED) {
-                        Log.d("Snake", "Internet permission not granted")
-                    }
-                    if (grantResults[2] !== PackageManager.PERMISSION_GRANTED) {
-                        Log.d("Snake", "Access network permission not granted")
-                    }
-                }
-            }
-            else -> {
-            }
-        }
     }
 
     override fun onStop() {
@@ -225,11 +211,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun toggleIcon() {
         if(isPlaying) {
+            gameView?.resetGame()
             menu?.getItem(0)?.setIcon(R.drawable.ic_stop)
         }
         else {
             menu?.getItem(0)?.setIcon(R.drawable.ic_play)
-            gameView?.resetGame()
         }
     }
 }

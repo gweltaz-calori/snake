@@ -10,7 +10,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-class BaseRequestTask(val callback: (Document) -> Unit) : AsyncTask<URL, Void, Boolean>() {
+// the purpose of this task is to make request and retrieve xml
+class BaseRequestTask(val callback: (Document?,Boolean) -> Unit) : AsyncTask<URL, Void, Boolean>() {
 
     private var document: Document? = null;
     private val MAX_ATTEMPT = 3
@@ -69,8 +70,8 @@ class BaseRequestTask(val callback: (Document) -> Unit) : AsyncTask<URL, Void, B
     }
 
     override fun onPostExecute(result: Boolean?) {
-        document?.let {
-            callback(it)
+        result?.let {
+            callback(document,it)
         }
     }
 }

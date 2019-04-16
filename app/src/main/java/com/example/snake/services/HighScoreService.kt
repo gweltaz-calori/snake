@@ -13,6 +13,7 @@ import org.w3c.dom.Document
 import java.lang.Exception
 import java.net.URL
 
+// That's the service that will deal with the high score
 class HighScoreService : Service() {
 
     private val NOTIFICATION_CHANNEL_ID = 101
@@ -32,7 +33,8 @@ class HighScoreService : Service() {
         return START_STICKY
     }
 
-    fun login(callback : (Document) -> Unit) {
+    //call the login web service
+    fun login(callback : (Document?,Boolean) -> Unit) {
         try {
             val request = BaseRequestTask(callback)
             request.execute(URL("http://snake.struct-it.fr/login.php?user=snake&pwd=test"))
@@ -42,7 +44,8 @@ class HighScoreService : Service() {
         }
     }
 
-    fun getList(callback : (Document) -> Unit) {
+    //call the list webservice
+    fun getList(callback : (Document?,Boolean) -> Unit) {
         try {
             val request = BaseRequestTask(callback)
             request.execute(URL("http://snake.struct-it.fr/score?list"))
@@ -52,13 +55,13 @@ class HighScoreService : Service() {
         }
     }
 
-    fun add(playerName:String,score: Int,callback : (Document) -> Unit ) {
+    //call the add web service
+    fun add(playerName:String,score: Int,callback : (Document?,Boolean) -> Unit ) {
         try {
             val request = BaseRequestTask(callback)
             request.execute(URL("http://snake.struct-it.fr/score?player=$playerName&value=$score"))
         }
         catch (e : Exception) {
-
         }
     }
 

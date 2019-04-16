@@ -7,6 +7,7 @@ import android.widget.TextView
 import com.example.snake.R
 import com.example.snake.model.Score
 
+// The adapter for the high score
 class HighScoreAdapter(private val myDataset: ArrayList<Score>) :
     RecyclerView.Adapter<HighScoreAdapter.MyViewHolder>() {
 
