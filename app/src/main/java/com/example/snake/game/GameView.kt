@@ -21,9 +21,12 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
     val limit2 = Tile(bounds.right, bounds.bottom)
     var score = 0
 
-    var snakeAI: SnakeAI = SnakeAI(listOf(Tile(
-        WIDTH - Snake.size, HEIGHT - Snake.size)))
-    var snake: Snake = Snake()
+    var snakeAI: SnakeAI = SnakeAI(
+        listOf(Tile(
+        WIDTH - Snake.size, HEIGHT - Snake.size)),
+        _limit1 = limit1, _limit2 = limit2
+    )
+    var snake: Snake = Snake(limit1 = limit1, limit2 = limit2)
     var apple: Apple =
         Apple(Tile(random(0, WIDTH), random(0, HEIGHT)))
 
@@ -41,14 +44,16 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
 
         canvas.drawRect(bounds,BORDER_PAINT)
 
-        val snakeHitBounds = snake.doesHitBounds(limit1, limit2)
-        val snakeAIHitBounds = snakeAI.doesHitBounds(limit1, limit2)
+        val snakeHitBounds = snake.doesHitBounds()
+        val snakeAIHitBounds = snakeAI.doesHitBounds()
 
         if (snakeHitBounds) {
             gameOverCallback?.let { it() }
         } else if (snakeAIHitBounds) {
             gameWinCallback?.let { it() }
         } else {
+            snakeAI.findApple(apple)
+
             snakeAI.update()
             snake.update()
             apple.update()
@@ -58,7 +63,10 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
             apple.draw(canvas)
 
             if (snake.intersectsApple(apple)) {
-                onScoreChanged()
+                onScoreChanged(1)
+            }
+            if (snakeAI.intersectsApple(apple)) {
+                onScoreChanged(-1)
             }
 
             if (snake.doesHitHimself()) {
@@ -67,15 +75,22 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
             if (snakeAI.doesHitHimself()) {
                 gameWinCallback?.let { it() }
             }
+            // TODO: check that two snakes doesn't collide
         }
     }
 
-    private fun onScoreChanged() {
-        apple.position.x = random(0,WIDTH)
-        apple.position.y = random(0,HEIGHT)
-        score++
-        scoreChangedCallback?.invoke()
-        snake.needCollect = true
+    private fun onScoreChanged(inc: Int) {
+        apple.position.x = random(0,WIDTH / 40) * 40
+        apple.position.y = random(0,HEIGHT / 40) * 40
+
+        if (inc > 0) {
+            // if inc is positive, that means the player eat the apple
+            score++
+            scoreChangedCallback?.invoke()
+            snake.needCollect = true
+        } else {
+            snakeAI.needCollect = true
+        }
     }
 
     fun onGameOver(onGameOver: () -> Unit) {
@@ -95,8 +110,11 @@ class GameView(context: Context,attributeSet: AttributeSet) : View(context,attri
     }
 
     fun resetGame() {
-        snakeAI = SnakeAI(listOf(Tile(WIDTH - Snake.size, HEIGHT - Snake.size)))
-        snake = Snake()
+        snakeAI = SnakeAI(
+            listOf(Tile(WIDTH - Snake.size, HEIGHT - Snake.size)),
+            _limit1 = limit1, _limit2 = limit2
+        )
+        snake = Snake(limit1 = limit1, limit2 = limit2)
         apple = Apple(Tile(random(0, WIDTH), random(0, HEIGHT)))
         score = 0
     }

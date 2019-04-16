@@ -9,7 +9,9 @@ import com.example.snake.extensions.SuperRect
 open class Snake(
     var tiles: List<Tile> = listOf(Tile(0, 0)),
     var direction: Direction = Direction.RIGHT,
-    val color: Int = Color.RED
+    val color: Int = Color.RED,
+    val limit1: Tile,
+    val limit2: Tile
 ) : DrawableInterface {
 
     companion object {
@@ -28,7 +30,7 @@ open class Snake(
         var newTiles = tiles.dropLast(1) //keep same size
 
         //grow by one
-        if(needCollect) {
+        if (needCollect) {
             newTiles = tiles
             needCollect = false
         }
@@ -60,7 +62,7 @@ open class Snake(
         return tail.find { SuperRect.intersects(SuperRect(head.x,head.y,size,size),SuperRect(it.x,it.y,size,size)) } != null
     }
 
-    fun doesHitBounds(limit1: Tile, limit2: Tile): Boolean {
+    fun doesHitBounds(): Boolean {
         tiles.find { (it.x < limit1.x || it.x > limit2.x - size) || (it.y < limit1.y || it.y > limit2.y - size) }
             ?: return false
         return true
@@ -68,6 +70,7 @@ open class Snake(
 }
 
 enum class Direction(val x: Int, val y: Int) {
+    STOP(0, 0),
     UP(0, -40),
     DOWN(0, 40),
     LEFT(-40, 0),
