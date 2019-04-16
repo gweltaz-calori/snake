@@ -1,4 +1,4 @@
-package com.example.snake.activity
+package com.example.snake.fragments
 
 import android.content.ComponentName
 import android.content.Context
@@ -6,17 +6,20 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.example.snake.R
 import com.example.snake.adapters.HighScoreAdapter
 import com.example.snake.model.Score
 import com.example.snake.services.HighScoreService
+import kotlinx.android.synthetic.main.fragment_leader_board.*
 
-// The activity that will display the high scores
-class HighScoreActivity : AppCompatActivity() {
+class LeaderBoardFragment : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: HighScoreAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
 
@@ -49,8 +52,8 @@ class HighScoreActivity : AppCompatActivity() {
     }
 
     fun doBindService() {
-        bindService(
-            Intent(this, HighScoreService::class.java),
+        activity?.bindService(
+            Intent(activity, HighScoreService::class.java),
             mConnection,
             Context.BIND_AUTO_CREATE
         )
@@ -59,7 +62,7 @@ class HighScoreActivity : AppCompatActivity() {
 
     fun doUnbindService() {
         if (mIsBound) {
-            unbindService(mConnection)
+            activity?.unbindService(mConnection)
             mIsBound = false
         }
     }
@@ -69,19 +72,33 @@ class HighScoreActivity : AppCompatActivity() {
         doUnbindService()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(com.example.snake.R.layout.activity_high_score)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         doBindService()
 
-        viewManager = LinearLayoutManager(this)
+        viewManager = LinearLayoutManager(activity?.applicationContext)
         viewAdapter = HighScoreAdapter(scores)
 
-        recyclerView = findViewById<RecyclerView>(com.example.snake.R.id.score_recycler_view).apply {
+        scoreRecyclerView.apply {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = viewAdapter
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_leader_board, container, false)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() =
+            LeaderBoardFragment().apply {
+
+            }
     }
 }
