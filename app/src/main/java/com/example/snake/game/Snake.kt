@@ -35,7 +35,9 @@ open class Snake(
             needCollect = false
         }
 
-        tiles = listOf(Tile(head.x + direction.x, head.y + direction.y)) + newTiles //the new tiles list
+        head.x += direction.x
+        head.y += direction.y
+        tiles = listOf(Tile(head.x, head.y)) + newTiles //the new tiles list
     }
 
     override fun draw(canvas: Canvas) {
@@ -45,9 +47,10 @@ open class Snake(
         val newY = head.y
         canvas.drawRect(Rect(newX,newY,newX + size,newY + size), paint) // draw the head
 
-        tail.forEach { // draw each tile from the tail
-            val newTailX = it.x
-            val newTailY = it.y
+        tail.forEachIndexed { index, tile -> // draw each tile from the tail
+            val newTailX = tile.x
+            val newTailY = tile.y
+            paint.alpha = 255 - 127 * index / tail.count()
             canvas.drawRect(Rect(newTailX ,newTailY,newTailX + size ,newTailY + size ), paint)
         }
     }
@@ -72,7 +75,6 @@ open class Snake(
 }
 
 enum class Direction(val x: Int, val y: Int) {
-    STOP(0, 0),
     UP(0, -Snake.TILE_SIZE),
     DOWN(0, Snake.TILE_SIZE),
     LEFT(-Snake.TILE_SIZE, 0),
